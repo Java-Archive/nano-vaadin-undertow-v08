@@ -16,7 +16,7 @@ there is no time and budget to create a demo project.
 You don´t want to copy paste all small things together.
 Here you will get a Nano-Project that will give you all in a second.
 
-Clone the repo and start editing the class ```HellWorld```.
+Clone the repo and start editing the class ```HelloWorld```.
 Nothing more. 
 
 ## How does it work?
