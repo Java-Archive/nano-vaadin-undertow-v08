@@ -75,7 +75,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
 
     <!--RapidPM-->
-    <rapidpm-functional-reactive.version>0.5.2-SNAPSHOT</rapidpm-functional-reactive.version>
+    <rapidpm-functional-reactive.version>0.5.1</rapidpm-functional-reactive.version>
     <rapidpm-dependencies.version>3.5.8</rapidpm-dependencies.version>
 
     <!--Vaadin-->
