@@ -30,7 +30,7 @@
 
 
   <groupId>org.rapidpm.vaadin</groupId>
-  <artifactId>nano-vaadin-v8</artifactId>
+  <artifactId>nano-vaadin-v08</artifactId>
   <version>0.1.0</version>
 
   <packaging>jar</packaging>
