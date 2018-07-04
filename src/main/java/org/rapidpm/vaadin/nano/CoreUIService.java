@@ -57,9 +57,8 @@ public class CoreUIService implements HasLogger {
         .addDeployment(servletBuilder);
     manager.deploy();
 
-    PathHandler path = null;
     try {
-      path = path(redirect("/")).addPrefixPath("/", manager.start());
+      PathHandler path = path(redirect("/")).addPrefixPath("/", manager.start());
       Undertow u = Undertow.builder()
                            .addHttpListener(valueOf(getProperty(CORE_UI_SERVER_PORT, CORE_UI_SERVER_PORT_DEFAULT)),
                                             getProperty(CORE_UI_SERVER_HOST, CORE_UI_SERVER_HOST_DEFAULT)
