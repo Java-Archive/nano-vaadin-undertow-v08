@@ -4,11 +4,24 @@
  <img src="https://vaadin.com/images/hero-reindeer.svg" width="200" height="200" /></a>
 </center>
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.rapidpm.vaadin/nano-vaadin-v08/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.rapidpm.vaadin/nano-vaadin-v08)
 
 # Nano Vaadin - Ramp up in a second.
 A nano project to start a Vaadin V8 project based on JDK10. 
 Perfect for Micro-UIs packed as fat jar in a docker image.
-On my Laptop the Server is started in approx **500ms**.
+On my Laptop the Server is started in approx **300ms**.
+
+## maven central
+You can use this as dependency as well. For this you should add 
+the following into your **pom.xml**
+
+```xml
+<dependency>
+  <groupId>org.rapidpm.vaadin</groupId>
+  <artifactId>nano-vaadin-v08</artifactId>
+  <version>x.y.z</version>
+</dependency>
+```
 
 ## target of this project
 The target of this project is a minimal rampup time for a first hello world.
