@@ -19,6 +19,9 @@ public class HelloWorld  {
   }
 
 
+  /**
+   * start adding your UI elements here.
+   */
   public static class HelloWorldSupplier implements ComponentSupplier {
     @Override
     public Component get() {

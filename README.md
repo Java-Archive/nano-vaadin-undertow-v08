@@ -6,7 +6,9 @@
 
 
 # Nano Vaadin - Ramp up in a second.
-A nano project to start a Vaadin project. Perfect for Micro-UIs packed as fat jar in a docker image.
+A nano project to start a Vaadin V8 project based on JDK10. 
+Perfect for Micro-UIs packed as fat jar in a docker image.
+On my Laptop the Server is started in approx **500ms**.
 
 ## target of this project
 The target of this project is a minimal rampup time for a first hello world.
@@ -16,8 +18,31 @@ there is no time and budget to create a demo project.
 You don´t want to copy paste all small things together.
 Here you will get a Nano-Project that will give you all in a second.
 
-Clone the repo and start editing the class ```HelloWorld```.
-Nothing more. 
+Clone the repo and start editing the class ```demo.HelloWorld```. 
+You will find it in the test source folder.
+
+````java
+public class HelloWorld  {
+
+  public static void main(String[] args) {
+    //reference the Supplier
+    setProperty(COMPONENT_SUPPLIER_TO_USE, HelloWorldSupplier.class.getName());
+    //start the Server
+    new CoreUIService().startup();
+  }
+
+
+  /**
+   * start adding your UI elements here.
+   */
+  public static class HelloWorldSupplier implements ComponentSupplier {
+    @Override
+    public Component get() {
+      return new Label("Hello World");
+    }
+  }
+}
+````
 
 ## How does it work?
 This project will not use any additional maven plugin or technology.
@@ -32,122 +57,77 @@ No DI to wire all things together. The way used here is based on good old Proper
 But let´s start from the beginning.
 
 ## CoreUIService
-The class CoreUIService will ramp up the Container and 
-holds the Servlet- and UI- class as inner static classes.
+The class CoreUIService will ramp up the Container. For this you should invoke the 
+method **startup()**. (see HelloWorld)
+The app itself will be deployed as **ROOT.war**.
+If nothing else is defined, the port **8899** and the IP **0.0.0.0** will be used.
+But you can define the **port** and the **IP**. The corresponding 
+properties are
+ * CORE_UI_SERVER_HOST = "core-ui-server-host";
+ * CORE_UI_SERVER_PORT = "core-ui-server-port";
 
-Here all the basic stuff is done. The start will init. a ServletContainer at port **8899**.
-The WebApp will deployed as **ROOT.war**. 
+With this you can use the Container for jUnit - UI tests easily. 
+Every test will get a random port to have concurrent tests.
+How to do this you can read under [http://vaadin.com/testing](http://vaadin.com/testing)
+or check the OpenSource project 
+on github [https://github.com/vaadin-developer/vaadin-testbench-ng](https://github.com/vaadin-developer/vaadin-testbench-ng)
 
+## Core Servlet && CoreUI
+For a Vaadin app you need a VaadinServlet. This is in a generic way implemented for this project.
+What you will do, is the mapping to your UI class. But for this project even this boiler-plate code is done.
+The reference will be **ui = CoreUI.class**
 
 ```java
-  public static void main(String[] args) throws ServletException {
-    new CoreUIService().startup();
-  }
-
-  public void startup() throws ServletException {
-    DeploymentInfo servletBuilder
-        = Servlets.deployment()
-                  .setClassLoader(CoreUIService.class.getClassLoader())
-                  .setContextPath("/")
-                  .setDeploymentName("ROOT.war")
-                  .setDefaultEncoding("UTF-8")
-                  .addServlets(
-                      servlet(
-                          CoreServlet.class.getSimpleName(),
-                          CoreServlet.class
-                      ).addMapping("/*")
-                      .setAsyncSupported(true)
-                  );
-
-    final DeploymentManager manager = Servlets
-        .defaultContainer()
-        .addDeployment(servletBuilder);
-    manager.deploy();
-    PathHandler path = path(redirect("/"))
-        .addPrefixPath("/", manager.start());
-    Undertow.builder()
-            .addHttpListener(8899, "0.0.0.0")
-            .setHandler(path)
-            .build()
-            .start();
-  }
+@WebServlet(value = "/*", asyncSupported = true, loadOnStartup = 1)
+@VaadinServletConfiguration(productionMode = false, ui = CoreUI.class)
+public class CoreServlet extends VaadinServlet {
+  //customize Servlet if needed
+}
 ```
 
-The Servlet itself will only bind the UI Class to the Vaadin Servlet.
-
-
-```java
-  @WebServlet("/*")
-  @VaadinServletConfiguration(productionMode = false, ui = MyUI.class)
-  public static class CoreServlet extends VaadinServlet {
-    //customize Servlet if needed
-  }
-```
-
-Now we are at6 a point that will need a little bit more flexibility.
-The UI Class will be bound with a Property of an Annotation. This means that we can not 
-work with dynamic content here.
-
-The switch to the implementation will be done with a ```Supplier<Component>```
-This component will be used as the Content Root of your App.
-
+The UI class is responsible to create an instance of the components you want to have.
+The property that will reference the Supplier<Compinent> is used to load the class and create an instance.
 
 ```java
-  @FunctionalInterface
-  public static interface ComponentSupplier extends Supplier<Component> { }
+@PreserveOnRefresh
+@Push
+public class CoreUI extends UI implements HasLogger {
+  public static final String COMPONENT_SUPPLIER_TO_USE = "COMPONENT_SUPPLIER_TO_USE";
 
-  @PreserveOnRefresh
-  @Push
-  public static class MyUI extends UI implements HasLogger {
-    public static final String COMPONENT_SUPPLIER_TO_USE = "COMPONENT_SUPPLIER_TO_USE";
-    @Override
-    protected void init(VaadinRequest request) {
-      final String className = System.getProperty(COMPONENT_SUPPLIER_TO_USE);
-      logger().info("class to load : " + className);
-      ((CheckedSupplier<Class<?>>) () -> forName(className))
-          .get() //TODO make it fault tolerant
-          .flatMap((CheckedFunction<Class<?>, Object>) Class::newInstance)
-          .flatMap((CheckedFunction<Object, ComponentSupplier>) ComponentSupplier.class::cast)
-          .flatMap((CheckedFunction<ComponentSupplier, Component>) Supplier::get)
-          .ifPresentOrElse(this::setContent,
-                           failed -> logger().warning(failed)
-          );
-    }
-  }
-```
-
-First the Property **COMPONENT_SUPPLIER_TO_USE** will be used to get the name of the Supplier class.
-this class will be loaded, instantiated and used to create the Supplier that will be responsible 
-to create the instance of the content root.
-
-## How a developer can use this
-
-To use this, you can start with editing the class ```HelloWorld``` that is available inside the 
-demo package at the test source folder.
-
-```java
-public class HelloWorld extends CoreUIService {
-
-  static {
-    System.setProperty(COMPONENT_SUPPLIER_TO_USE, HelloWorldSupplier.class.getName());
-  }
-
-  public static class HelloWorldSupplier implements ComponentSupplier {
-    @Override
-    public Component get() {
-      return new Label("Hello World");
-    }
+  @Override
+  protected void init(VaadinRequest request) {
+    final String className = getProperty(COMPONENT_SUPPLIER_TO_USE);
+    logger().info("class to load : " + className);
+    ((CheckedSupplier<Class<?>>) () -> forName(className))
+        .get()
+        .ifFailed(e -> logger().warning(e))
+        .flatMap((CheckedFunction<Class<?>, Object>) Class::newInstance)
+        .flatMap((CheckedFunction<Object, ComponentSupplier>) ComponentSupplier.class::cast)
+        .flatMap((CheckedFunction<ComponentSupplier, Component>) Supplier::get)
+        .ifPresentOrElse(this::setContent,
+                         failed -> logger().warning(failed)
+        );
   }
 }
 ```
 
-* extend the class ```CoreUIService```
-* set the Property **COMPONENT_SUPPLIER_TO_USE** with the name of the Supplier class
-* implement the interface ComponentSupplier.
+Remember the part in the class ```HellWorld``` 
 
-After this you can start the app with the main-method inherited from ```CoreUIService```.
+```java
+setProperty(COMPONENT_SUPPLIER_TO_USE, HelloWorldSupplier.class.getName());
+```
 
-Happy Coding.
+## How a developer like you can use this
+The steps are quite easy. First of all, clone the repo and try to build it with **mvn clean package**
+or use your IDE, if maven is not installed for command line usage on your machine.
+
+If this is running well, start the **main** Method from the class ```HelloWorld```.
+Now you can use a browser on [http://localhost:8899/](http://localhost:8899/)
+
+To create your own demos, edit the Supplier.
+
+
+```Happy Coding.```
 
 if you have any questions: ping me on Twitter [https://twitter.com/SvenRuppert](https://twitter.com/SvenRuppert)
 or via mail.

@@ -29,11 +29,6 @@ public class CoreUIService implements HasLogger {
   public static final String CORE_UI_SERVER_HOST = "core-ui-server-host";
   public static final String CORE_UI_SERVER_PORT = "core-ui-server-port";
 
-
-  public static void main(String[] args) {
-    new CoreUIService().startup();
-  }
-
   public Result<Undertow> undertow = failure("not initialised so far");
 
 
