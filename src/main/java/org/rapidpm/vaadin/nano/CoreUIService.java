@@ -1,68 +1,43 @@
 package org.rapidpm.vaadin.nano;
 
-import com.vaadin.annotations.PreserveOnRefresh;
-import com.vaadin.annotations.Push;
-import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.UI;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import org.rapidpm.dependencies.core.logger.HasLogger;
-import org.rapidpm.frp.functions.CheckedFunction;
-import org.rapidpm.frp.functions.CheckedSupplier;
+import org.rapidpm.frp.model.Result;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import java.util.function.Supplier;
 
 import static io.undertow.Handlers.path;
 import static io.undertow.Handlers.redirect;
 import static io.undertow.servlet.Servlets.servlet;
-import static java.lang.Class.forName;
+import static java.lang.Integer.valueOf;
+import static java.lang.System.getProperty;
+import static org.rapidpm.frp.model.Result.failure;
+import static org.rapidpm.frp.model.Result.success;
 
 /**
  *
  */
-public class CoreUIService {
+public class CoreUIService implements HasLogger {
 
-  @FunctionalInterface
-  public static interface ComponentSupplier extends Supplier<Component> { }
+  public static final String CORE_UI_SERVER_HOST_DEFAULT = "0.0.0.0";
+  public static final String CORE_UI_SERVER_PORT_DEFAULT = "8899";
 
-  @PreserveOnRefresh
-  @Push
-  public static class MyUI extends UI implements HasLogger {
-    public static final String COMPONENT_SUPPLIER_TO_USE = "COMPONENT_SUPPLIER_TO_USE";
-    @Override
-    protected void init(VaadinRequest request) {
-      final String className = System.getProperty(COMPONENT_SUPPLIER_TO_USE);
-      logger().info("class to load : " + className);
-      ((CheckedSupplier<Class<?>>) () -> forName(className))
-          .get() //TODO make it fault tolerant
-          .flatMap((CheckedFunction<Class<?>, Object>) Class::newInstance)
-          .flatMap((CheckedFunction<Object, ComponentSupplier>) ComponentSupplier.class::cast)
-          .flatMap((CheckedFunction<ComponentSupplier, Component>) Supplier::get)
-          .ifPresentOrElse(this::setContent,
-                           failed -> logger().warning(failed)
-          );
-    }
-  }
+  public static final String CORE_UI_SERVER_HOST = "core-ui-server-host";
+  public static final String CORE_UI_SERVER_PORT = "core-ui-server-port";
 
-  @WebServlet("/*")
-  @VaadinServletConfiguration(productionMode = false, ui = MyUI.class)
-  public static class CoreServlet extends VaadinServlet {
-    //customize Servlet if needed
-  }
 
-  public static void main(String[] args) throws ServletException {
+  public static void main(String[] args) {
     new CoreUIService().startup();
   }
 
-  public void startup() throws ServletException {
+  public Result<Undertow> undertow = failure("not initialised so far");
+
+
+  public void startup() {
     DeploymentInfo servletBuilder
         = Servlets.deployment()
                   .setClassLoader(CoreUIService.class.getClassLoader())
@@ -74,20 +49,31 @@ public class CoreUIService {
                           CoreServlet.class.getSimpleName(),
                           CoreServlet.class
                       ).addMapping("/*")
-                      .setAsyncSupported(true)
+                       .setAsyncSupported(true)
                   );
 
     final DeploymentManager manager = Servlets
         .defaultContainer()
         .addDeployment(servletBuilder);
     manager.deploy();
-    PathHandler path = path(redirect("/"))
-        .addPrefixPath("/", manager.start());
-    Undertow.builder()
-            .addHttpListener(8899, "0.0.0.0")
-            .setHandler(path)
-            .build()
-            .start();
-  }
 
+    PathHandler path = null;
+    try {
+      path = path(redirect("/")).addPrefixPath("/", manager.start());
+      Undertow u = Undertow.builder()
+                           .addHttpListener(valueOf(getProperty(CORE_UI_SERVER_PORT, CORE_UI_SERVER_PORT_DEFAULT)),
+                                            getProperty(CORE_UI_SERVER_HOST, CORE_UI_SERVER_HOST_DEFAULT)
+                           )
+                           .setHandler(path)
+                           .build();
+      u.start();
+
+      u.getListenerInfo().forEach(e -> logger().info(e.toString()));
+
+      undertow = success(u);
+    } catch (ServletException e) {
+      e.printStackTrace();
+      undertow = failure(e.getMessage());
+    }
+  }
 }

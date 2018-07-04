@@ -20,6 +20,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+
+  <parent>
+    <groupId>org.rapidpm</groupId>
+    <artifactId>rapidpm-dependencies</artifactId>
+    <version>4.0.0</version>
+  </parent>
+
+
   <groupId>org.rapidpm.vaadin</groupId>
   <artifactId>nano-vaadin</artifactId>
   <version>1.0.0-SNAPSHOT</version>
@@ -31,15 +39,15 @@
     <name>Vaadin</name>
     <url>http://www.vaadin.com</url>
   </organization>
-  <url>https://github.com/vaadin-developer/nano-vaadin</url>
+  <url>https://github.com/vaadin-developer/nano-vaadin-v08</url>
 
   <scm>
-    <url>https://github.com/vaadin-developer/nano-vaadin</url>
+    <url>https://github.com/vaadin-developer/nano-vaadin-v08</url>
     <connection>
-      scm:git:https://github.com/vaadin-developer/nano-vaadin.git
+      scm:git:https://github.com/vaadin-developer/nano-vaadin-v08.git
     </connection>
     <developerConnection>
-      scm:git:https://github.com/vaadin-developer/nano-vaadin
+      scm:git:https://github.com/vaadin-developer/nano-vaadin-v08
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
@@ -56,7 +64,7 @@
   <issueManagement>
     <system>Github</system>
     <url>
-      https://github.com/vaadin-developer/nano-vaadin/issues
+      https://github.com/vaadin-developer/nano-vaadin-v08/issues
     </url>
   </issueManagement>
   <licenses>
@@ -71,17 +79,17 @@
   <properties>
     <!--technical-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>10</maven.compiler.source>
+    <maven.compiler.target>10</maven.compiler.target>
 
     <!--RapidPM-->
-    <rapidpm-functional-reactive.version>0.5.1</rapidpm-functional-reactive.version>
-    <rapidpm-dependencies.version>3.5.8</rapidpm-dependencies.version>
+    <rapidpm-functional-reactive.version>0.7.0</rapidpm-functional-reactive.version>
+    <rapidpm-dependencies.version>4.0.0</rapidpm-dependencies.version>
 
     <!--Vaadin-->
-    <vaadin.version>8.3.1</vaadin.version>
+    <vaadin.version>8.4.4</vaadin.version>
 
-    <undertow.version>1.4.20.Final</undertow.version>
+    <undertow.version>2.0.9.Final</undertow.version>
 
     <!--logging-->
     <slf4j.version>1.7.25</slf4j.version>

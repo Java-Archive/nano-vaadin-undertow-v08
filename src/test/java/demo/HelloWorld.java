@@ -2,18 +2,22 @@ package demo;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import org.rapidpm.vaadin.nano.ComponentSupplier;
 import org.rapidpm.vaadin.nano.CoreUIService;
 
-import static org.rapidpm.vaadin.nano.CoreUIService.MyUI.COMPONENT_SUPPLIER_TO_USE;
+import static java.lang.System.setProperty;
+import static org.rapidpm.vaadin.nano.CoreUI.COMPONENT_SUPPLIER_TO_USE;
 
 /**
  *
  */
-public class HelloWorld extends CoreUIService {
+public class HelloWorld  {
 
-  static {
-    System.setProperty(COMPONENT_SUPPLIER_TO_USE, HelloWorldSupplier.class.getName());
+  public static void main(String[] args) {
+    setProperty(COMPONENT_SUPPLIER_TO_USE, HelloWorldSupplier.class.getName());
+    new CoreUIService().startup();
   }
+
 
   public static class HelloWorldSupplier implements ComponentSupplier {
     @Override
