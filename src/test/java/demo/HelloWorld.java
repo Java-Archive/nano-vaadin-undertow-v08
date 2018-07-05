@@ -40,7 +40,7 @@ public class HelloWorld  {
   public static class HelloWorldSupplier implements ComponentSupplier {
     @Override
     public Component get() {
-      return new Label("Hello World");
+      return new BasicTestUI();
     }
   }
 }
