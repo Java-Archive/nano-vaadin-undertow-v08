@@ -54,6 +54,7 @@ public class CoreUIService implements HasLogger {
                   .setContextPath("/")
                   .setDeploymentName("ROOT.war")
                   .setDefaultEncoding("UTF-8")
+
                   .addServlets(
                       servlet(
                           CoreServlet.class.getSimpleName(),
