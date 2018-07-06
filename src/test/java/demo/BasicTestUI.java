@@ -40,7 +40,7 @@ public class BasicTestUI extends Composite {
 
     button.setId(BUTTON_ID);
     button.setCaption(BUTTON_ID);
-    button.addClickListener(e -> label.setValue(valueOf(counter++)));
+    button.addClickListener(e -> label.setValue(valueOf(++counter)));
 
     setCompositionRoot(new VerticalLayout(button, label));
   }
