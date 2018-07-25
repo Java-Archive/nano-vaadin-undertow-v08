@@ -1,12 +1,12 @@
 /**
  * Copyright © 2017 Sven Ruppert (sven.ruppert@gmail.com)
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,6 +47,12 @@ public class CoreUIService implements HasLogger {
   public Result<Undertow> undertow = failure("not initialised so far");
 
 
+  private Result<Config> configResult = Result.failure("not init so far");
+
+  public void startup(Config config) {
+    this.configResult = Result.ofNullable(config);
+  }
+
   public void startup() {
     DeploymentInfo servletBuilder
         = Servlets.deployment()
@@ -72,9 +78,17 @@ public class CoreUIService implements HasLogger {
       PathHandler path = path(redirect("/"))
           .addPrefixPath("/", manager.start());
 
+      Integer port = (configResult.isPresent())
+                     ? configResult.get().port()
+                     : valueOf(getProperty(CORE_UI_SERVER_PORT, CORE_UI_SERVER_PORT_DEFAULT));
+
+      String host = (configResult.isPresent())
+                    ? configResult.get().host()
+                    : getProperty(CORE_UI_SERVER_HOST, CORE_UI_SERVER_HOST_DEFAULT);
+
       Undertow u = Undertow.builder()
-                           .addHttpListener(valueOf(getProperty(CORE_UI_SERVER_PORT, CORE_UI_SERVER_PORT_DEFAULT)),
-                                            getProperty(CORE_UI_SERVER_HOST, CORE_UI_SERVER_HOST_DEFAULT)
+                           .addHttpListener(port,
+                                            host
                            )
                            .setHandler(path)
                            .build();
