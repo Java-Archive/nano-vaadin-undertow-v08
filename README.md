@@ -85,6 +85,10 @@ manually, without using system-properties. This is usefull in an environment,
 where multiple Servlet - containers are started on the same host. 
 With this you can implement concurrent tests.
 
+![_data/MultipleServletContainers_50p.gif](_data/MultipleServletContainers_50p.gif)
+
+
+
 With this you can use the Container for jUnit - UI tests easily. 
 Every test will get a random port to have concurrent tests.
 How to do this you can read under [http://vaadin.com/testing](http://vaadin.com/testing)
