@@ -78,6 +78,16 @@ But you can define the **port** and the **IP**. The corresponding
 properties are
  * CORE_UI_SERVER_HOST = "core-ui-server-host";
  * CORE_UI_SERVER_PORT = "core-ui-server-port";
+ 
+ 
+If you are using the method **startup(Config config)** you can set this values
+manually, without using system-properties. This is usefull in an environment,
+where multiple Servlet - containers are started on the same host. 
+With this you can implement concurrent tests.
+
+![_data/MultipleServletContainers_50p.gif](_data/MultipleServletContainers_50p.gif)
+
+
 
 With this you can use the Container for jUnit - UI tests easily. 
 Every test will get a random port to have concurrent tests.

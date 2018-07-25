@@ -47,6 +47,13 @@ public class CoreUIService implements HasLogger {
   public Result<Undertow> undertow = failure("not initialised so far");
 
 
+  private Result<Config> configResult = Result.failure("not init so far");
+
+  public void startup(Config config) {
+    this.configResult = Result.ofNullable(config);
+    startup();
+  }
+
   public void startup() {
     DeploymentInfo servletBuilder
         = Servlets.deployment()
@@ -54,6 +61,7 @@ public class CoreUIService implements HasLogger {
                   .setContextPath("/")
                   .setDeploymentName("ROOT.war")
                   .setDefaultEncoding("UTF-8")
+
                   .addServlets(
                       servlet(
                           CoreServlet.class.getSimpleName(),
@@ -68,11 +76,19 @@ public class CoreUIService implements HasLogger {
     manager.deploy();
 
     try {
-      PathHandler path = path(redirect("/")).addPrefixPath("/", manager.start());
+      PathHandler path = path(redirect("/"))
+          .addPrefixPath("/", manager.start());
+
+      Integer port = (configResult.isPresent())
+                     ? configResult.get().port()
+                     : valueOf(getProperty(CORE_UI_SERVER_PORT, CORE_UI_SERVER_PORT_DEFAULT));
+
+      String host = (configResult.isPresent())
+                    ? configResult.get().host()
+                    : getProperty(CORE_UI_SERVER_HOST, CORE_UI_SERVER_HOST_DEFAULT);
+
       Undertow u = Undertow.builder()
-                           .addHttpListener(valueOf(getProperty(CORE_UI_SERVER_PORT, CORE_UI_SERVER_PORT_DEFAULT)),
-                                            getProperty(CORE_UI_SERVER_HOST, CORE_UI_SERVER_HOST_DEFAULT)
-                           )
+                           .addHttpListener(port, host)
                            .setHandler(path)
                            .build();
       u.start();

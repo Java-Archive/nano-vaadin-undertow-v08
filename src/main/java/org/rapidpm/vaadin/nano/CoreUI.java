@@ -24,6 +24,7 @@ import org.rapidpm.dependencies.core.logger.HasLogger;
 import org.rapidpm.frp.functions.CheckedFunction;
 import org.rapidpm.frp.functions.CheckedSupplier;
 
+import java.lang.reflect.Constructor;
 import java.util.function.Supplier;
 
 import static java.lang.Class.forName;
@@ -41,7 +42,8 @@ public class CoreUI extends UI implements HasLogger {
     ((CheckedSupplier<Class<?>>) () -> forName(className))
         .get()
         .ifFailed(e -> logger().warning(e))
-        .flatMap((CheckedFunction<Class<?>, Object>) Class::newInstance)
+        .flatMap((CheckedFunction<Class<?>, Constructor<?>>) aClass -> aClass.getDeclaredConstructor())
+        .flatMap((CheckedFunction<Constructor<?>, Object>) Constructor::newInstance)
         .flatMap((CheckedFunction<Object, ComponentSupplier>) ComponentSupplier.class::cast)
         .flatMap((CheckedFunction<ComponentSupplier, Component>) Supplier::get)
         .ifPresentOrElse(this::setContent,
