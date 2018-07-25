@@ -51,6 +51,7 @@ public class CoreUIService implements HasLogger {
 
   public void startup(Config config) {
     this.configResult = Result.ofNullable(config);
+    startup();
   }
 
   public void startup() {
@@ -87,9 +88,7 @@ public class CoreUIService implements HasLogger {
                     : getProperty(CORE_UI_SERVER_HOST, CORE_UI_SERVER_HOST_DEFAULT);
 
       Undertow u = Undertow.builder()
-                           .addHttpListener(port,
-                                            host
-                           )
+                           .addHttpListener(port, host)
                            .setHandler(path)
                            .build();
       u.start();
