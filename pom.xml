@@ -25,13 +25,14 @@
   <parent>
     <groupId>org.rapidpm</groupId>
     <artifactId>rapidpm-dependencies</artifactId>
-    <version>4.0.1</version>
+    <version>04.00.05-RPM-SNAPSHOT</version>
   </parent>
 
 
   <groupId>org.rapidpm.vaadin</groupId>
   <artifactId>nano-vaadin-v08</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
+  <name>RapidPM Nano-Vaadin-V08</name>
+  <version>00.07.04-RPM-SNAPSHOT</version>
 
   <packaging>jar</packaging>
 
@@ -79,18 +80,19 @@
 
   <properties>
     <!--technical-->
-    <maven.compiler.source>10</maven.compiler.source>
-    <maven.compiler.target>10</maven.compiler.target>
+    <!--<maven.compiler.release>10</maven.compiler.release>-->
+    <!--<maven.compiler.source>10</maven.compiler.source>-->
+    <!--<maven.compiler.target>10</maven.compiler.target>-->
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!--RapidPM-->
-    <rapidpm-functional-reactive.version>0.7.0</rapidpm-functional-reactive.version>
-    <rapidpm-dependencies.version>4.0.1</rapidpm-dependencies.version>
+    <rapidpm-functional-reactive.version>00.07.04-RPM-SNAPSHOT</rapidpm-functional-reactive.version>
+    <rapidpm-dependencies.version>04.00.05-RPM-SNAPSHOT</rapidpm-dependencies.version>
 
     <!--Vaadin-->
-    <vaadin.version>8.4.5</vaadin.version>
+    <vaadin.version>8.5.1</vaadin.version>
 
     <undertow.version>2.0.10.Final</undertow.version>
 
