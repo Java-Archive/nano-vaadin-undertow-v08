@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.rapidpm</groupId>
     <artifactId>rapidpm-dependencies</artifactId>
-    <version>4.0.1</version>
+    <version>04.00.15-RPM</version>
   </parent>
 
 
@@ -79,26 +79,37 @@
 
   <properties>
     <!--technical-->
-    <maven.compiler.source>10</maven.compiler.source>
-    <maven.compiler.target>10</maven.compiler.target>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!--RapidPM-->
-    <rapidpm-functional-reactive.version>0.7.0</rapidpm-functional-reactive.version>
-    <rapidpm-dependencies.version>4.0.1</rapidpm-dependencies.version>
+    <rapidpm-functional-reactive.version>01.00.02-RPM</rapidpm-functional-reactive.version>
+    <rapidpm-logger-adapter.version>01.00.01-RPM</rapidpm-logger-adapter.version>
 
     <!--Vaadin-->
-    <vaadin.version>8.4.5</vaadin.version>
+    <vaadin.version>8.7.1</vaadin.version>
 
-    <undertow.version>2.0.10.Final</undertow.version>
+    <undertow.version>2.0.19.Final</undertow.version>
 
     <!--logging-->
     <slf4j.version>1.7.25</slf4j.version>
     <log4j-api.version>2.8.1</log4j-api.version>
   </properties>
 
+  <!-- Just to disable any accidental deployment to maven.central -->
+  <distributionManagement>
+    <repository>
+      <id>localhost</id>
+      <url>file://${basedir}/target/repo/</url>
+    </repository>
+    <snapshotRepository>
+      <id>localhost</id>
+      <url>file://${basedir}/target/snapshot-repo/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <dependencyManagement>
     <dependencies>
@@ -116,8 +127,8 @@
   <dependencies>
     <dependency>
       <groupId>org.rapidpm</groupId>
-      <artifactId>rapidpm-dependencies-core-logger</artifactId>
-      <version>${rapidpm-dependencies.version}</version>
+      <artifactId>rapidpm-logger-adapter</artifactId>
+      <version>${rapidpm-logger-adapter.version}</version>
     </dependency>
 
     <dependency>
@@ -164,20 +175,4 @@
       <artifactId>vaadin-push</artifactId>
     </dependency>
   </dependencies>
-
-  <!--<build>-->
-    <!--<plugins>-->
-      <!--<plugin>-->
-        <!--<groupId>com.google.cloud.tools</groupId>-->
-        <!--<artifactId>jib-maven-plugin</artifactId>-->
-        <!--<version>0.9.2</version>-->
-        <!--<configuration>-->
-          <!--<to>-->
-            <!--<image>nano-vaadin-v08</image>-->
-          <!--</to>-->
-          <!--<mainClass>org.rapidpm.vaadin.nano.CoreUIService</mainClass>-->
-        <!--</configuration>-->
-      <!--</plugin>-->
-    <!--</plugins>-->
-  <!--</build>-->
 </project>
