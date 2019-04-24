@@ -25,12 +25,12 @@
   <parent>
     <groupId>org.rapidpm</groupId>
     <artifactId>rapidpm-dependencies</artifactId>
-    <version>04.00.15-RPM</version>
+    <version>04.00.16-RPM</version>
   </parent>
 
 
   <groupId>org.rapidpm.vaadin</groupId>
-  <artifactId>nano-vaadin-v08</artifactId>
+  <artifactId>nano-vaadin-undertow-v08</artifactId>
   <version>0.2.0</version>
 
   <packaging>jar</packaging>
@@ -85,14 +85,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <!--RapidPM-->
-    <rapidpm-functional-reactive.version>01.00.02-RPM</rapidpm-functional-reactive.version>
-    <rapidpm-logger-adapter.version>01.00.01-RPM</rapidpm-logger-adapter.version>
-
     <!--Vaadin-->
-    <vaadin.version>8.7.1</vaadin.version>
+    <vaadin.version>8.7.2</vaadin.version>
 
-    <undertow.version>2.0.19.Final</undertow.version>
+    <undertow.version>2.0.20.Final</undertow.version>
 
     <!--logging-->
     <slf4j.version>1.7.25</slf4j.version>
@@ -125,17 +121,6 @@
   </dependencyManagement>
 
   <dependencies>
-    <dependency>
-      <groupId>org.rapidpm</groupId>
-      <artifactId>rapidpm-logger-adapter</artifactId>
-      <version>${rapidpm-logger-adapter.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.rapidpm</groupId>
-      <artifactId>rapidpm-functional-reactive</artifactId>
-      <version>${rapidpm-functional-reactive.version}</version>
-    </dependency>
 
     <!--Infrastructure-->
     <dependency>
