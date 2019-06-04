@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.rapidpm</groupId>
     <artifactId>rapidpm-dependencies</artifactId>
-    <version>04.00.16-RPM</version>
+    <version>04.00.17-RPM</version>
   </parent>
 
 
@@ -178,7 +178,7 @@
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
-                    <Main-Class>org.rapidpm.vaadin.nano.CoreUIService</Main-Class>
+                    <Main-Class>org.rapidpm.vaadin.nano.CoreUIKotlinService</Main-Class>
                   </manifestEntries>
                 </transformer>
               </transformers>
